@@ -1,0 +1,50 @@
+service: muncher-sls-prisma
+
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
+  region: sa-east-1
+  apiGateway:
+    shouldStartNameWithService: true
+
+plugins:
+  - serverless-offline
+
+functions:
+  lstusers:
+    handler: src/users.lstusers
+    events:
+      - http:
+          method: GET
+          path: /
+  register:
+    handler: src/users.register
+    events:
+      - http:
+          method: POST
+          path: /register
+          cors: true
+  buybalance:
+    handler: src/users.buybalance
+    events:
+      - http:
+          method: POST
+          path: /buybalance
+          cors: true
+  purchase:
+    handler: src/users.purchase
+    events:
+      - http:
+          method: POST
+          path: /purchase
+          cors: true
+  transfer:
+    handler: src/users.transfer
+    events:
+      - http:
+          method: POST
+          path: /transfer
+          cors: true

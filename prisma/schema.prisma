@@ -1,0 +1,49 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// Órdenes de compra
+model PurchaseOrder {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  valpur    Int
+  user      User?     @relation(fields: [userId], references: [id])
+  userId    Int
+}
+
+// Modelo de movimientos. Aquí podemos ver quién ha hecho qué tipo de movimientos y por qué montos.
+model Movement {
+  id        Int       @id @default(autoincrement())
+  valmov    Int
+  transFrom Int       @default(0)
+  transTo   Int       @default(0)
+  createdAt DateTime  @default(now())
+  movtype   Movtype   @default(BYB)
+  user      User?     @relation(fields: [userId], references: [id])
+  userId    Int     
+}
+
+// Campo enum para los tipos de movimientos
+enum Movtype {
+  BYB // Buy Balance
+  TFB // Transfer Balance
+  PRC // Purchase Products
+}
+
+// Modelo de usuarios
+model User {
+  id              Int               @id @default(autoincrement())
+  email           String            @unique
+  name            String?
+  balance         Int
+  movements       Movement[]
+  purchaseorders  PurchaseOrder[]
+}
